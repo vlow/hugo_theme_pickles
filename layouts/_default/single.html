@@ -3,17 +3,24 @@
 <article class="p-article">
   <header>
     <h1>{{ .Title }}</h1>
+    {{ if eq (.Type | singularize) "post" }}
     <div>
       <div class="c-time">
-        Posted on
         <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">
-          {{ .Date.Format "Jan 2, 2006" }}
+          {{ .Date.Format "Jan 2, 2006" }} | 
         </time>
+	{{ if gt .ReadingTime 1 }}
+	    {{ .Scratch.Set "readingTime" "mins" }}
+	{{ else }}
+	    {{ .Scratch.Set "readingTime" "min" }}
+	{{ end }}
+	{{ .WordCount }} words | ~{{ .ReadingTime }} {{ .Scratch.Get "readingTime" }} read
       </div>
       {{ range .Params.tags }}
       <a href="{{ $baseurl }}/tags/{{ . | urlize }}" class="c-tag">{{ . }}</a>
       {{ end }}
     </div>
+    {{ end }}
   </header>
   {{ with .Params.thumbnail }}
     <img src="{{ . }}" alt="thumbnail" class="p-article__thumbnail">
@@ -22,6 +29,16 @@
     {{ .Content }}
   </section>
   <footer>
+    {{ if eq (.Type | singularize) "page" }}
+    <div>
+      <div class="c-last-update">
+	Last Update: 
+        <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">
+		{{ .Date.Format "Jan 2, 2006" }}
+        </time>
+      </div>
+    </div>
+    {{ end }}
     {{ with ($.Param "disqus") }}
     <div id="disqus_thread"></div>
     <script>

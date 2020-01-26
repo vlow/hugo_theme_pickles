@@ -4,12 +4,18 @@
     <p class="c-article__meta">
       Posted on
       <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">
-        {{ .Date.Format "Jan 2, 2006" }}
+	      {{ .Date.Format "Jan 2, 2006" }}
       </time>
+	{{ if gt .ReadingTime 1 }}
+	    {{ .Scratch.Set "readingTime" "mins" }}
+	{{ else }}
+	    {{ .Scratch.Set "readingTime" "min" }}
+        {{ end }}
+	| {{.WordCount}} words | ~{{.ReadingTime}} {{ .Scratch.Get "readingTime" }}
     </p>
   </header>
   <div class="c-article__summary">
-    {{ .Summary | plainify | safeHTML }}
+	  {{ .Summary | plainify | safeHTML }}
   </div>
   {{ if .Truncated }}
   <a href="{{ .Permalink }}" class="c-article__btn p-list-article__btn">Read more</a>
